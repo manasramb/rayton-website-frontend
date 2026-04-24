@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAYTON | Engineered Wafer Exfoliation</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #000205;
+            --cyan: #00FFFF;
+            --cyan-glow: rgba(0, 255, 255, 0.5);
+            --text-main: #FFFFFF;
+            --text-muted: #8A94A6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            /* Expanded canvas to accommodate the new Team section */
+            height: 16000px; 
+            scrollbar-width: none;
+        }
+        body::-webkit-scrollbar { display: none; }
+
+        /* --- 3D CANVAS --- */
+        #webgl-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 30px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; mix-blend-mode: difference;
+        }
+        .brand { font-family: 'Rajdhani'; font-size: 2.5rem; font-weight: 700; letter-spacing: 6px; color: #FFF; text-decoration: none; }
+        .brand span { color: var(--cyan); }
+        .nav-links { display: flex; gap: 40px; font-family: 'Share Tech Mono'; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
+        .nav-links a { color: #FFF; text-decoration: none; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--cyan); }
+
+        /* --- UI OVERLAY PANELS --- */
+        #ui-layer {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 10; pointer-events: none;
+        }
+
+        .data-section {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; padding: 0 10%;
+            opacity: 0; transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .data-section.active {
+            opacity: 1; transform: translateY(0); pointer-events: auto;
+        }
+
+        /* Layout positioning for different stages */
+        #sec-hero { justify-content: center; text-align: center; }
+        #sec-crisis { justify-content: flex-start; }
+        #sec-tech { justify-content: flex-end; text-align: right; }
+        #sec-yield { justify-content: flex-start; }
+        #sec-apps { justify-content: flex-end; text-align: right; }
+        #sec-team { justify-content: center; }
+
+        .content-box {
+            max-width: 650px;
+            background: rgba(2, 5, 10, 0.4);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            padding: 50px; border-radius: 16px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        /* Typography */
+        h1, h2, .stat { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+        .hud-label { font-family: 'Share Tech Mono'; color: var(--cyan); letter-spacing: 3px; font-size: 1rem; margin-bottom: 20px; display: block; }
+        h1 { font-size: 5.5rem; line-height: 1; margin-bottom: 20px; text-shadow: 0 0 40px rgba(0,0,0,0.8); }
+        h2 { font-size: 3.5rem; margin-bottom: 20px; line-height: 1.1; }
+        p { font-size: 1.25rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+        .stat { font-size: 6rem; color: var(--cyan); line-height: 1; margin-bottom: 10px; text-shadow: 0 0 20px var(--cyan-glow); }
+
+        /* Specific App Grid Override */
+        .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; text-align: left; }
+        .app-card { background: rgba(0,255,255,0.03); padding: 20px; border-left: 2px solid var(--cyan); }
+        .app-card h3 { font-family: 'Rajdhani'; font-size: 1.5rem; color: #FFF; margin-bottom: 5px; }
+        .app-card p { font-size: 0.95rem; margin: 0; color: var(--text-muted); }
+
+        /* The Team Grid */
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; text-align: left; max-width: 1200px; }
+        .team-card { background: rgba(2, 5, 10, 0.6); border: 1px solid rgba(0, 255, 255, 0.15); padding: 30px; border-radius: 8px; backdrop-filter: blur(10px); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .team-card:hover { border-color: var(--cyan); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,255,255,0.1); }
+        .team-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--cyan); }
+        .team-card h3 { font-family: 'Rajdhani'; font-size: 2rem; color: #FFF; margin-bottom: 5px; line-height: 1; }
+        .team-card .title { font-family: 'Share Tech Mono'; color: var(--cyan); font-size: 0.9rem; margin-bottom: 15px; display: block; letter-spacing: 2px; }
+        .team-card p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+        /* Scroll Progress HUD */
+        .telemetry { position: fixed; bottom: 40px; left: 5%; font-family: 'Share Tech Mono'; color: #555; letter-spacing: 2px; z-index: 100;}
+        .telemetry span { color: var(--cyan); }
+        .scroll-prompt { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); font-family: 'Share Tech Mono'; color: var(--cyan); letter-spacing: 4px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="brand">RAYTON<span>.</span></a>
+        <div class="nav-links">
+            <a href="#">The Problem</a>
+            <a href="#">The Process</a>
+            <a href="#">The Output</a>
+            <a href="#" style="color: var(--cyan);">Investor Portal</a>
+        </div>
+    </nav>
+
+    <div class="telemetry">
+        SYSTEM PHASE: <span id="sys-phase">AWAITING SEQUENCE</span><br>
+        PARTICLE ENERGY: <span id="beam-energy">0.0 TeV</span>
+    </div>
+
+    <div id="webgl-container"></div>
+
+    <div id="ui-layer">
+        
+        <section class="data-section active" id="sec-hero">
+            <div style="text-align: center; max-width: 900px; position: relative;">
+                <span class="hud-label">// ADVANCED SEMICONDUCTOR ENGINEERING</span>
+                <h1>THE FUTURE OF SILICON IS NOT SILICON.</h1>
+                <p style="font-size: 1.5rem; color: #FFF; max-width: 700px; margin: 0 auto;">Enabling high-performance GaN and SiC devices through a proprietary ion-implantation layer-transfer process. Made in the USA.</p>
+                <div class="scroll-prompt">SCROLL TO INITIATE</div>
+            </div>
+        </section>
+
+        <section class="data-section" id="sec-crisis">
+            <div class="content-box">
+                <span class="hud-label">// 01: THE CRISIS</span>
+                <div class="stat">$100B+</div>
+                <h2>The AI Energy Arms Race</h2>
+                <p>AI is expected to double datacenter energy consumption by 2028. The race to scale AI is an energy arms race, and current silicon-based devices cannot deliver the necessary efficiency.</p>
+                <p>Hyperscalers lack access to scalable, cost-effective solutions. We unlock $30–$70B in potential annual energy savings by upgrading device-level material.</p>
+            </div>
+        </section>
+
+        <section class="data-section" id="sec-tech">
+            <div class="content-box">
+                <span class="hud-label">// 02: THE MECHANISM</span>
+                <div class="stat">2µm</div>
+                <h2>Proton Beam Precision</h2>
+                <p>We replace wasteful diamond saws with a high-current proton particle accelerator. Our proprietary system embeds hydrogen ions deep into bulk GaN or SiC crystals.</p>
+                <p>This allows controlled exfoliation of ultra-thin active layers without mechanical grinding, drastically reducing material usage.</p>
+            </div>
+        </section>
+
+        <section class="data-section" id="sec-yield">
+            <div class="content-box">
+                <span class="hud-label">// 03: THE MULTIPLIER</span>
+                <div class="stat">10x</div>
+                <h2>Supply Chain Dominance</h2>
+                <p>One conventional wafer is converted into 10 ultra-thin Rayton wafers. This creates a massive 10x buffer against supply shocks, tariffs, and years-long fab buildouts.</p>
+                <p style="color: var(--cyan); font-family: 'Share Tech Mono';">>> 30% LOWER INPUT COSTS<br>>> 100% DROP-IN COMPATIBILITY</p>
+            </div>
+        </section>
+
+        <section class="data-section" id="sec-apps">
+            <div class="content-box" style="max-width: 800px;">
+                <span class="hud-label">// 04: DEPLOYMENT VECTORS</span>
+                <h2>Mission-Relevant Deployment</h2>
+                <p>U.S.-based manufacturing aligned with the CHIPS Act & IRA, designed for high-power, high-frequency execution.</p>
+                <div class="app-grid">
+                    <div class="app-card"><h3>AI & Datacenters</h3><p>Powering hyperscale infrastructure & edge compute.</p></div>
+                    <div class="app-card"><h3>Defense & Space</h3><p>Improving SWaP for radar & directed energy systems.</p></div>
+                    <div class="app-card"><h3>Electric Vehicles</h3><p>Higher power densities & thermal efficiency.</p></div>
+                    <div class="app-card"><h3>Advanced Compute</h3><p>SiC-on-insulator architectures for Quantum.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="data-section" id="sec-team">
+            <div style="max-width: 1200px; width: 100%;">
+                <span class="hud-label" style="text-align: center;">// 05: SYSTEM ARCHITECTS</span>
+                <h2 style="text-align: center; font-size: 4rem;">THE LEADERSHIP NODE</h2>
+                
+                <div class="team-grid">
+                    <div class="team-card">
+                        <h3>Andrew Yakub</h3>
+                        <span class="title">CEO & FOUNDER</span>
+                        <p>Physics background from UC Santa Barbara. Named to Forbes' "30 Under 30" list. Prior to Rayton, Andrew founded ReGen America, Inc., developing over 6 megawatts of commercial solar. Holds 2 patents on the Rayton process.</p>
+                    </div>
+                    
+                    <div class="team-card">
+                        <h3>Dr. James Rosenzweig</h3>
+                        <span class="title">BOARD DIRECTOR</span>
+                        <p>UCLA Professor and former Physics & Astronomy Dept Chair. World-renowned researcher with 500+ scientific publications. Fellow of the American Physical Society. Invaluable expertise guiding the ion-cutting process and high-current proton implanter.</p>
+                    </div>
+                    
+                    <div class="team-card">
+                        <h3>Robert Julian</h3>
+                        <span class="title">BOARD DIRECTOR</span>
+                        <p>Over 30 years of financial leadership, serving as CFO at four public companies including The RealReal (NASDAQ: REAL) and Callaway Golf. Proven track record leading high-performing finance teams in complex, fast-paced environments.</p>
+                    </div>
+                    
+                    <div class="team-card">
+                        <h3>Ruth Gratzke</h3>
+                        <span class="title">STRATEGIC ADVISOR</span>
+                        <p>President of Siemens Smart Infrastructure USA. Former executive at General Electric and HUBBELL Inc. Masters in Electrical Engineering. Expertise in aligning connected building, power distribution products, and smart infrastructure.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // ========================================================
+        // 1. THREE.JS: THE EXFOLIATION ENGINE
+        // ========================================================
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // --- MATERIALS ---
+        const waferMaterial = new THREE.MeshStandardMaterial({
+            color: 0x050810,
+            metalness: 0.9,
+            roughness: 0.1,
+            side: THREE.DoubleSide
+        });
+
+        const glowingEdgeMaterial = new THREE.LineBasicMaterial({ 
+            color: 0x00FFFF, 
+            transparent: true, 
+            opacity: 0.5 
+        });
+
+        // --- THE WAFER STACK ---
+        const waferGeometry = new THREE.CylinderGeometry(5, 5, 0.2, 64);
+        const edgeGeometry = new THREE.EdgesGeometry(waferGeometry);
+        
+        const waferGroup = new THREE.Group();
+        const wafers = [];
+        const numWafers = 10; 
+
+        for (let i = 0; i < numWafers; i++) {
+            const mesh = new THREE.Mesh(waferGeometry, waferMaterial);
+            const edges = new THREE.LineSegments(edgeGeometry, glowingEdgeMaterial);
+            mesh.add(edges);
+            
+            // Stacked tightly on load
+            mesh.position.y = (i - numWafers/2) * 0.21; 
+            
+            wafers.push(mesh);
+            waferGroup.add(mesh);
+        }
+
+        scene.add(waferGroup);
+        waferGroup.rotation.x = Math.PI / 4; 
+
+        // --- THE PARTICLE BEAM ---
+        const beamGeometry = new THREE.CylinderGeometry(0.2, 0.2, 40, 16);
+        const beamMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0x00FFFF, 
+            transparent: true, 
+            opacity: 0, 
+            blending: THREE.AdditiveBlending 
+        });
+        const particleBeam = new THREE.Mesh(beamGeometry, beamMaterial);
+        particleBeam.position.y = 20; 
+        scene.add(particleBeam);
+
+        // --- LIGHTING ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        
+        const spotLight = new THREE.SpotLight(0x00FFFF, 5);
+        spotLight.position.set(10, 20, 10);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.5;
+        scene.add(spotLight);
+
+        // Camera setup
+        camera.position.set(0, 0, 25);
+
+        // Render Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            // Ambient rotation
+            waferGroup.rotation.y += 0.002;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ========================================================
+        // 2. GSAP: THE SCROLL NARRATIVE TIMELINE
+        // ========================================================
+        
+        const sysPhase = document.getElementById('sys-phase');
+        const beamEnergy = document.getElementById('beam-energy');
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: document.body,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5,
+                onUpdate: (self) => {
+                    beamEnergy.innerText = (self.progress * 14.5).toFixed(1) + " TeV";
+                }
+            }
+        });
+
+        // Helper function to handle UI fades
+        function swapUI(outId, inId, phaseText) {
+            tl.to(outId, { opacity: 0, y: -50, duration: 1, ease: "power2.in" })
+              .set(outId, { className: "data-section" })
+              .set(inId, { className: "data-section active" })
+              .to(inId, { opacity: 1, y: 0, duration: 1, ease: "power2.out", onStart: () => sysPhase.innerText = phaseText }, "-=0.5");
+        }
+
+        // --- CHOREOGRAPHY ---
+
+        // PHASE 1: Hero -> Crisis
+        tl.to(waferGroup.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 3, ease: "power1.inOut" }, 0)
+          .to(waferGroup.position, { x: 5, duration: 3, ease: "power1.inOut" }, 0); 
+        swapUI("#sec-hero", "#sec-crisis", "ANALYZING BULK CRYSTAL");
+
+        // PHASE 2: Crisis -> Tech (FIRE THE PARTICLE BEAM)
+        tl.to(waferGroup.position, { x: -5, duration: 3, ease: "power1.inOut" }, "+=1") 
+          .to(particleBeam.material, { opacity: 0.8, duration: 0.5 }, "-=2") 
+          .to(particleBeam.position, { y: 0, duration: 1.5, ease: "power4.in" }, "-=1.5") 
+          .to(spotLight, { intensity: 50, duration: 0.5, yoyo: true, repeat: 1 }, "-=0.5") 
+          .to(particleBeam.material, { opacity: 0, duration: 0.5 }); 
+        swapUI("#sec-crisis", "#sec-tech", "ION-IMPLANTATION ACTIVE");
+
+        // PHASE 3: Tech -> Yield (THE EXFOLIATION)
+        tl.to(waferGroup.position, { x: 4, duration: 3, ease: "power2.inOut" }, "+=1")
+          .to(waferGroup.rotation, { x: 0, duration: 3, ease: "power2.inOut" }, "-=3"); 
+        
+        wafers.forEach((wafer, i) => {
+            const spreadDistance = (i - numWafers/2) * 2.5; 
+            tl.to(wafer.position, { y: spreadDistance, duration: 3, ease: "back.out(1.5)" }, "-=3");
+        });
+        swapUI("#sec-tech", "#sec-yield", "EXFOLIATION COMPLETE : 10X MULTIPLIER");
+
+        // PHASE 4: Yield -> Apps (FLY THROUGH)
+        tl.to(waferGroup.position, { x: -8, z: 15, duration: 4, ease: "power1.inOut" }, "+=1") 
+          .to(waferGroup.rotation, { x: Math.PI / 2, y: Math.PI / 8, duration: 4, ease: "power1.inOut" }, "-=4"); 
+        swapUI("#sec-yield", "#sec-apps", "DEPLOYING TO FOUNDRY");
+
+        // PHASE 5: Apps -> Team (SERVER RACK ALIGNMENT)
+        // Move the wafers into a vertical, deep-background server-rack formation to frame the team grid
+        tl.to(waferGroup.position, { x: 0, y: 0, z: -15, duration: 4, ease: "power2.inOut" }, "+=1")
+          .to(waferGroup.rotation, { x: Math.PI / 2, y: 0, z: Math.PI / 2, duration: 4, ease: "power2.inOut" }, "-=4");
+        
+        // Re-tighten the wafers slightly so they look like a server rack
+        wafers.forEach((wafer, i) => {
+            const rackDistance = (i - numWafers/2) * 1.5; 
+            tl.to(wafer.position, { y: rackDistance, duration: 3, ease: "power2.inOut" }, "-=4");
+        });
+        
+        swapUI("#sec-apps", "#sec-team", "ACCESSING LEADERSHIP NODE");
+
+        // Padding at the end
+        tl.to({}, { duration: 2 });
+
+    </script>
+</body>
+</html>
