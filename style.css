@@ -3,7 +3,7 @@
     --cyan: #00FFFF;
     --cyan-glow: rgba(0, 255, 255, 0.5);
     --text-main: #FFFFFF;
-    --text-muted: #8A94A6;
+    --text-muted: #C8D1E0; /* Brighter for readability */
 }
 
 * {
