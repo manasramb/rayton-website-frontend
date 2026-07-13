@@ -106,15 +106,36 @@ gsap.registerPlugin(ScrollTrigger);
                 scrub: 1.5,
                 onUpdate: (self) => {
                     beamEnergy.innerText = (self.progress * 14.5).toFixed(1) + " TeV";
+                    const navHome = document.getElementById('nav-home');
+                    if (navHome) {
+                        navHome.style.display = self.progress > 0.02 ? 'inline-block' : 'none';
+                    }
                 }
             }
         });
 
-        function swapUI(outId, inId, phaseText) {
+        function swapUI(outId, inId, phaseText, navId, prevPhaseText, prevNavId) {
             tl.to(outId, { opacity: 0, y: -50, duration: 1, ease: "power2.in" })
               .set(outId, { className: "data-section" })
               .set(inId, { className: "data-section active" })
-              .to(inId, { opacity: 1, y: 0, duration: 1, ease: "power2.out", onStart: () => sysPhase.innerText = phaseText }, "-=0.5");
+              .to(inId, { opacity: 1, y: 0, duration: 1, ease: "power2.out", 
+                  onStart: () => {
+                      sysPhase.innerText = phaseText;
+                      document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('nav-active'));
+                      if (navId) {
+                          const activeLink = document.getElementById(navId);
+                          if (activeLink) activeLink.classList.add('nav-active');
+                      }
+                  },
+                  onReverseComplete: () => {
+                      sysPhase.innerText = prevPhaseText;
+                      document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('nav-active'));
+                      if (prevNavId) {
+                          const activeLink = document.getElementById(prevNavId);
+                          if (activeLink) activeLink.classList.add('nav-active');
+                      }
+                  }
+              }, "-=0.5");
         }
 
         // Use variables for 3D positioning so we can adjust for mobile screens dynamically
@@ -124,7 +145,7 @@ gsap.registerPlugin(ScrollTrigger);
         // PHASE 1: Hero -> Crisis
         tl.to(waferGroup.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 3, ease: "power1.inOut" }, 0)
           .to(waferGroup.position, { x: crystalShiftX, duration: 3, ease: "power1.inOut" }, 0); 
-        swapUI("#sec-hero", "#sec-crisis", "ANALYZING BULK CRYSTAL");
+        swapUI("#sec-hero", "#sec-crisis", "ANALYZING BULK CRYSTAL", "nav-products", "AWAITING SEQUENCE", "nav-home");
 
         // PHASE 2: Crisis -> Tech
         tl.to(waferGroup.position, { x: -crystalShiftX, duration: 3, ease: "power1.inOut" }, "+=1") 
@@ -132,7 +153,7 @@ gsap.registerPlugin(ScrollTrigger);
           .to(particleBeam.position, { y: 0, duration: 1.5, ease: "power4.in" }, "-=1.5") 
           .to(spotLight, { intensity: 50, duration: 0.5, yoyo: true, repeat: 1 }, "-=0.5") 
           .to(particleBeam.material, { opacity: 0, duration: 0.5 }); 
-        swapUI("#sec-crisis", "#sec-tech", "ION-IMPLANTATION ACTIVE");
+        swapUI("#sec-crisis", "#sec-tech", "ION-IMPLANTATION ACTIVE", "nav-tech", "ANALYZING BULK CRYSTAL", "nav-products");
 
         // PHASE 3: Tech -> Yield
         tl.to(waferGroup.position, { x: isMobile ? 0 : 4, duration: 3, ease: "power2.inOut" }, "+=1")
@@ -142,12 +163,12 @@ gsap.registerPlugin(ScrollTrigger);
             const spreadDistance = (i - numWafers/2) * 2.5; 
             tl.to(wafer.position, { y: spreadDistance, duration: 3, ease: "back.out(1.5)" }, "-=3");
         });
-        swapUI("#sec-tech", "#sec-yield", "EXFOLIATION COMPLETE : 10X MULTIPLIER");
+        swapUI("#sec-tech", "#sec-yield", "EXFOLIATION COMPLETE : 10X MULTIPLIER", "nav-tech", "ION-IMPLANTATION ACTIVE", "nav-tech");
 
         // PHASE 4: Yield -> Apps
         tl.to(waferGroup.position, { x: isMobile ? 0 : -8, z: 15, duration: 4, ease: "power1.inOut" }, "+=1") 
           .to(waferGroup.rotation, { x: Math.PI / 2, y: Math.PI / 8, duration: 4, ease: "power1.inOut" }, "-=4"); 
-        swapUI("#sec-yield", "#sec-apps", "DEPLOYING TO FOUNDRY");
+        swapUI("#sec-yield", "#sec-apps", "DEPLOYING TO FOUNDRY", "nav-apps", "EXFOLIATION COMPLETE : 10X MULTIPLIER", "nav-tech");
 
         // PHASE 5: Apps -> Team
         tl.to(waferGroup.position, { x: 0, y: 0, z: -15, duration: 4, ease: "power2.inOut" }, "+=1")
@@ -158,6 +179,18 @@ gsap.registerPlugin(ScrollTrigger);
             tl.to(wafer.position, { y: rackDistance, duration: 3, ease: "power2.inOut" }, "-=4");
         });
         
-        swapUI("#sec-apps", "#sec-team", "ACCESSING LEADERSHIP NODE");
+        swapUI("#sec-apps", "#sec-team", "ACCESSING LEADERSHIP NODE", "nav-partners", "DEPLOYING TO FOUNDRY", "nav-apps");
 
         tl.to({}, { duration: 2 });
+
+        // ========================================================
+        // 3. NAVIGATION HANDLERS
+        // ========================================================
+        
+        function goHome(e) {
+            if(e) e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        document.getElementById('nav-brand').addEventListener('click', goHome);
+        document.getElementById('nav-home').addEventListener('click', goHome);

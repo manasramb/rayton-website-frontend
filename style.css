@@ -38,7 +38,7 @@
         .brand span { color: var(--cyan); }
         .nav-links { display: flex; gap: clamp(15px, 3vw, 40px); font-family: 'Share Tech Mono'; text-transform: uppercase; letter-spacing: 1px; font-size: clamp(0.7rem, 1.5vw, 0.9rem); flex-wrap: wrap; justify-content: center;}
         .nav-links a { color: #FFF; text-decoration: none; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--cyan); }
+        .nav-links a:hover, .nav-links a.nav-active { color: var(--cyan); }
 
         /* --- UI OVERLAY PANELS --- */
         #ui-layer {
