@@ -647,6 +647,9 @@ p {
     overflow: hidden;
     min-height: 250px;
     opacity: 0;
+    background: 
+        radial-gradient(circle at 100% 50%, rgba(0, 255, 255, 0.15) 0%, transparent 60%),
+        linear-gradient(45deg, rgba(2,5,10,1) 0%, rgba(10,15,25,1) 100%);
 }
 
 .data-section.active .us-mfg-banner {
@@ -658,29 +661,6 @@ p {
     to {
         opacity: 1;
     }
-}
-
-.us-flag-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-    opacity: 0.4;
-    filter: saturate(1.2) contrast(1.1);
-}
-
-.us-mfg-banner::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(2,5,10,0.9) 0%, rgba(2,5,10,0.6) 50%, rgba(0,255,255,0.1) 100%);
-    z-index: 1;
 }
 
 .us-mfg-content {
