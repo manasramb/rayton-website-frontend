@@ -111,38 +111,43 @@
                 </ul>
 
                 <div class="pillars-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 25px 0;">
-                    <div style="background: rgba(0, 255, 255, 0.02); padding: 15px; border: 1px solid rgba(0, 255, 255, 0.1); border-radius: 6px; text-align: center;">
+                    <div class="pillar-card">
                         <div style="font-size: 2rem; margin-bottom: 5px;">⚡</div>
                         <h4 style="font-family: 'Rajdhani'; color: #fff; margin-bottom: 5px; text-transform: uppercase;">Lower Energy</h4>
                         <p style="font-size: 0.8rem; margin: 0; color: var(--text-muted);">Consumes 30–70% less energy</p>
                     </div>
-                    <div style="background: rgba(0, 255, 255, 0.02); padding: 15px; border: 1px solid rgba(0, 255, 255, 0.1); border-radius: 6px; text-align: center;">
+                    <div class="pillar-card">
                         <div style="font-size: 2rem; margin-bottom: 5px;">💎</div>
                         <h4 style="font-family: 'Rajdhani'; color: #fff; margin-bottom: 5px; text-transform: uppercase;">Higher Efficiency</h4>
                         <p style="font-size: 0.8rem; margin: 0; color: var(--text-muted);">10x higher material yield</p>
                     </div>
-                    <div style="background: rgba(0, 255, 255, 0.02); padding: 15px; border: 1px solid rgba(0, 255, 255, 0.1); border-radius: 6px; text-align: center;">
+                    <div class="pillar-card">
                         <div style="font-size: 2rem; margin-bottom: 5px;">🇺🇸</div>
                         <h4 style="font-family: 'Rajdhani'; color: #fff; margin-bottom: 5px; text-transform: uppercase;">Secure US Mfg</h4>
                         <p style="font-size: 0.8rem; margin: 0; color: var(--text-muted);">Proudly U.S. manufactured</p>
                     </div>
-                    <div style="background: rgba(0, 255, 255, 0.02); padding: 15px; border: 1px solid rgba(0, 255, 255, 0.1); border-radius: 6px; text-align: center;">
+                    <div class="pillar-card">
                         <div style="font-size: 2rem; margin-bottom: 5px;">🔬</div>
                         <h4 style="font-family: 'Rajdhani'; color: #fff; margin-bottom: 5px; text-transform: uppercase;">Patented Tech</h4>
                         <p style="font-size: 0.8rem; margin: 0; color: var(--text-muted);">Proprietary wafer process</p>
                     </div>
                 </div>
 
-                <div style="background: rgba(0, 255, 255, 0.05); padding: 20px; border-left: 2px solid var(--cyan); margin-top: 20px;">
-                    <h3 style="color: #fff; font-family: 'Rajdhani'; font-size: 1.5rem; margin-bottom: 10px;">🇺🇸 Proudly Manufactured in the United States</h3>
-                    <p style="font-size: 0.9rem; margin-bottom: 10px;">Supporting a resilient domestic semiconductor supply chain through:</p>
-                    <ul class="check-list" style="font-size: 0.85rem; columns: 2;">
-                        <li>✓ CHIPS & Science Act alignment</li>
-                        <li>✓ Inflation Reduction Act incentives</li>
-                        <li>✓ Trusted sourcing for defense and critical infrastructure</li>
-                        <li>✓ Reduced geopolitical supply-chain risk</li>
-                    </ul>
-                    <p style="font-size: 0.85rem; margin-bottom: 0;">U.S.-manufactured wafers that reduce geopolitical risk, strengthen supply-chain resilience, support domestic sourcing requirements, and position customers to benefit from applicable federal semiconductor initiatives.</p>
+                <div class="us-mfg-banner">
+                    <video class="us-flag-bg" autoplay loop muted playsinline>
+                        <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/1/13/US_Flag_Backlit.webm/US_Flag_Backlit.webm.720p.vp9.webm" type="video/webm">
+                    </video>
+                    <div class="us-mfg-content">
+                        <h3 style="color: #fff; font-family: 'Rajdhani'; font-size: 1.5rem; margin-bottom: 10px;">🇺🇸 Proudly Manufactured in the United States</h3>
+                        <p style="font-size: 0.9rem; margin-bottom: 10px;">Supporting a resilient domestic semiconductor supply chain through:</p>
+                        <ul class="check-list" style="font-size: 0.85rem; columns: 2;">
+                            <li>✓ CHIPS & Science Act alignment</li>
+                            <li>✓ Inflation Reduction Act incentives</li>
+                            <li>✓ Trusted sourcing for defense and critical infrastructure</li>
+                            <li>✓ Reduced geopolitical supply-chain risk</li>
+                        </ul>
+                        <p style="font-size: 0.85rem; margin-bottom: 0;">U.S.-manufactured wafers that reduce geopolitical risk, strengthen supply-chain resilience, support domestic sourcing requirements, and position customers to benefit from applicable federal semiconductor initiatives.</p>
+                    </div>
                 </div>
                 <div class="btn-group">
                     <a href="#" class="btn btn-primary">Start a Technical Discussion</a>
@@ -205,6 +210,16 @@
                     <a href="mailto:info@rayton.com?subject=Request Technical Overview&body=Hello Rayton Team,%0D%0A%0D%0AI would like to request a technical overview..." class="btn btn-secondary">Request Technical Overview</a>
                 </div>
             </div>
+            
+            <footer style="position: absolute; bottom: 0; left: 0; width: 100%; text-align: center; padding: 25px 20px; font-family: 'Share Tech Mono'; color: var(--text-muted); font-size: 0.85rem; background: rgba(0,2,5,0.8); border-top: 1px solid rgba(0, 255, 255, 0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 110;">
+                <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div>&copy; <script>document.write(new Date().getFullYear())</script> Rayton. All rights reserved.</div>
+                    <div style="display: flex; gap: 20px;">
+                        <a href="#" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#00FFFF'" onmouseout="this.style.color='var(--text-muted)'">Privacy Policy</a>
+                        <a href="#" style="color: var(--text-muted); text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#00FFFF'" onmouseout="this.style.color='var(--text-muted)'">Terms of Service</a>
+                    </div>
+                </div>
+            </footer>
         </section>
     </div>
 
