@@ -17,7 +17,7 @@ body {
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
-    height: 13000px;
+    height: 12500px;
     scrollbar-width: none;
 }
 
@@ -290,6 +290,95 @@ p {
     color: var(--text-muted);
     line-height: 1.5;
     margin: 0;
+}
+
+
+/* Buttons */
+.btn-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    font-family: 'Share Tech Mono';
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--cyan);
+    color: #000;
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.btn-primary:hover {
+    background: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+/* Lists */
+.bullet-list {
+    list-style: none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.bullet-list li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    color: var(--text-main);
+    font-family: 'Share Tech Mono';
+    font-size: clamp(0.85rem, 2vw, 1rem);
+}
+
+.bullet-list li::before {
+    content: '>>';
+    position: absolute;
+    left: 0;
+    color: var(--cyan);
+}
+
+.check-list {
+    list-style: none;
+    margin: 20px 0;
+}
+
+.check-list li {
+    margin-bottom: 10px;
+    color: var(--text-main);
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+}
+
+/* Layout overrides for new sections */
+#sec-partners {
+    justify-content: flex-start;
+}
+
+#sec-contact {
+    justify-content: center;
+    text-align: center;
 }
 
 /* Scroll Progress HUD */

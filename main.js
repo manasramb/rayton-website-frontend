@@ -142,18 +142,18 @@ gsap.registerPlugin(ScrollTrigger);
         const isMobile = window.innerWidth < 768;
         const crystalShiftX = isMobile ? 0 : 5; // Don't shift crystal left/right on mobile, keep it center behind the glass panel
 
-        // PHASE 1: Hero -> Crisis
+        // PHASE 1: Hero -> Problem
         tl.to(waferGroup.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 3, ease: "power1.inOut" }, 0)
           .to(waferGroup.position, { x: crystalShiftX, duration: 3, ease: "power1.inOut" }, 0); 
-        swapUI("#sec-hero", "#sec-crisis", "ANALYZING BULK CRYSTAL", "nav-products", "AWAITING SEQUENCE", "nav-home");
+        swapUI("#sec-hero", "#sec-problem", "ANALYZING BULK CRYSTAL", "nav-products", "AWAITING SEQUENCE", "nav-home");
 
-        // PHASE 2: Crisis -> Tech
+        // PHASE 2: Problem -> Tech
         tl.to(waferGroup.position, { x: -crystalShiftX, duration: 3, ease: "power1.inOut" }, "+=1") 
           .to(particleBeam.material, { opacity: 0.8, duration: 0.5 }, "-=2") 
           .to(particleBeam.position, { y: 0, duration: 1.5, ease: "power4.in" }, "-=1.5") 
           .to(spotLight, { intensity: 50, duration: 0.5, yoyo: true, repeat: 1 }, "-=0.5") 
           .to(particleBeam.material, { opacity: 0, duration: 0.5 }); 
-        swapUI("#sec-crisis", "#sec-tech", "ION-IMPLANTATION ACTIVE", "nav-tech", "ANALYZING BULK CRYSTAL", "nav-products");
+        swapUI("#sec-problem", "#sec-tech", "ION-IMPLANTATION ACTIVE", "nav-tech", "ANALYZING BULK CRYSTAL", "nav-products");
 
         // PHASE 3: Tech -> Yield
         tl.to(waferGroup.position, { x: isMobile ? 0 : 4, duration: 3, ease: "power2.inOut" }, "+=1")
@@ -170,7 +170,7 @@ gsap.registerPlugin(ScrollTrigger);
           .to(waferGroup.rotation, { x: Math.PI / 2, y: Math.PI / 8, duration: 4, ease: "power1.inOut" }, "-=4"); 
         swapUI("#sec-yield", "#sec-apps", "DEPLOYING TO FOUNDRY", "nav-apps", "EXFOLIATION COMPLETE : 10X MULTIPLIER", "nav-tech");
 
-        // PHASE 5: Apps -> Team
+        // PHASE 5: Apps -> Partners
         tl.to(waferGroup.position, { x: 0, y: 0, z: -15, duration: 4, ease: "power2.inOut" }, "+=1")
           .to(waferGroup.rotation, { x: Math.PI / 2, y: 0, z: Math.PI / 2, duration: 4, ease: "power2.inOut" }, "-=4");
         
@@ -178,8 +178,17 @@ gsap.registerPlugin(ScrollTrigger);
             const rackDistance = (i - numWafers/2) * 1.5; 
             tl.to(wafer.position, { y: rackDistance, duration: 3, ease: "power2.inOut" }, "-=4");
         });
-        
-        swapUI("#sec-apps", "#sec-team", "ACCESSING LEADERSHIP NODE", "nav-partners", "DEPLOYING TO FOUNDRY", "nav-apps");
+        swapUI("#sec-apps", "#sec-partners", "INTEGRATION PROTOCOL INITIATED", "nav-partners", "DEPLOYING TO FOUNDRY", "nav-apps");
+
+        // PHASE 6: Partners -> Team (Leadership)
+        tl.to(waferGroup.rotation, { y: Math.PI, duration: 4, ease: "power1.inOut" }, "+=1")
+          .to(waferGroup.scale, { x: 1.2, y: 1.2, z: 1.2, duration: 4, ease: "power1.inOut" }, "-=4");
+        swapUI("#sec-partners", "#sec-team", "ACCESSING LEADERSHIP NODE", "nav-investors", "INTEGRATION PROTOCOL INITIATED", "nav-partners");
+
+        // PHASE 7: Team -> Contact
+        tl.to(waferGroup.rotation, { x: 0, y: 0, z: 0, duration: 4, ease: "power2.inOut" }, "+=1")
+          .to(waferGroup.position, { z: -5, duration: 4, ease: "power2.inOut" }, "-=4");
+        swapUI("#sec-team", "#sec-contact", "AWAITING USER INPUT", "nav-contact", "ACCESSING LEADERSHIP NODE", "nav-investors");
 
         tl.to({}, { duration: 2 });
 
@@ -187,10 +196,35 @@ gsap.registerPlugin(ScrollTrigger);
         // 3. NAVIGATION HANDLERS
         // ========================================================
         
-        function goHome(e) {
-            if(e) e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        const navMap = {
+            'nav-home': 0.0,
+            'nav-products': 0.12,
+            'nav-tech': 0.35,
+            'nav-apps': 0.58,
+            'nav-partners': 0.74,
+            'nav-investors': 0.85,
+            'nav-contact': 0.98
+        };
+
+        function handleNavClick(e) {
+            e.preventDefault();
+            const id = e.currentTarget.id;
+            const progress = navMap[id];
+            if (progress !== undefined) {
+                const totalScroll = document.body.scrollHeight - window.innerHeight;
+                window.scrollTo({
+                    top: progress * totalScroll,
+                    behavior: 'smooth'
+                });
+            }
         }
-        
-        document.getElementById('nav-brand').addEventListener('click', goHome);
-        document.getElementById('nav-home').addEventListener('click', goHome);
+
+        document.getElementById('nav-brand').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        Object.keys(navMap).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('click', handleNavClick);
+        });
