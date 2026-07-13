@@ -145,6 +145,14 @@ nav {
     justify-content: center;
 }
 
+/* Ensure the pillars grid can be overridden responsively */
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 15px;
+    margin: 25px 0;
+}
+
 .content-box {
     width: 100%;
     max-width: 650px;
@@ -424,31 +432,40 @@ p {
     }
 }
 
-/* --- MOBILE SPECIFIC OVERRIDES --- */
-@media (max-width: 768px) {
+/* --- RESPONSIVE BREAKPOINTS --- */
+
+/* TABLET (max 900px) */
+@media (max-width: 900px) {
     nav {
-        flex-direction: column;
         padding: 15px 5%;
-        background: rgba(1, 2, 4, 0.9);
-        backdrop-filter: blur(10px);
+        background: rgba(1, 2, 4, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
 
-    .telemetry {
-        bottom: auto;
-        top: 100px;
-        left: 5%;
-        right: 5%;
-        text-align: center;
-        pointer-events: none;
+    .nav-links {
+        gap: 12px;
+        font-size: 0.75rem;
     }
 
-    /* Move telemetry to top on mobile */
-
-    /* Center all panels on mobile so they don't clip off screen */
+    /* All sections center on tablet */
     .data-section {
         justify-content: center !important;
         text-align: left !important;
-        padding: 0 5%;
+        align-items: flex-start;
+        padding: 90px 5% 20px;
+        overflow-y: auto;
+    }
+
+    #sec-hero {
+        align-items: center;
+        padding-top: 80px;
+    }
+
+    .content-box {
+        max-width: 100%;
+        max-height: none;
+        overflow-y: visible;
     }
 
     #sec-tech .content-box,
@@ -456,18 +473,133 @@ p {
         text-align: left;
     }
 
-    /* Ensure the content boxes don't touch the very edges */
-    .content-box {
-        max-height: 75vh;
-        overflow-y: auto;
-        scrollbar-width: none;
+    .app-grid {
+        grid-template-columns: 1fr 1fr;
     }
 
-    /* Adjust the hero prompt for mobile */
+    .pillars-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .check-list[style*="columns: 2"] {
+        columns: 1 !important;
+    }
+
+    .us-mfg-banner {
+        min-height: 200px;
+    }
+
+    .telemetry {
+        bottom: auto;
+        top: auto;
+        display: none;
+    }
+
     .scroll-prompt {
         bottom: -40px;
     }
 }
+
+/* MOBILE (max 600px) */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 5%;
+        gap: 8px;
+    }
+
+    .nav-links {
+        gap: 8px;
+        font-size: 0.65rem;
+        letter-spacing: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .data-section {
+        padding: 120px 4% 20px;
+        align-items: flex-start;
+        overflow-y: auto;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 10vw, 3.5rem);
+    }
+
+    h2 {
+        font-size: clamp(1.6rem, 7vw, 2.5rem);
+    }
+
+    p {
+        font-size: 0.95rem;
+    }
+
+    .content-box {
+        max-width: 100%;
+        max-height: none;
+        overflow-y: visible;
+        padding: 20px;
+    }
+
+    .app-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pillars-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .check-list[style*="display: flex"] {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .check-list[style*="columns: 2"] {
+        columns: 1 !important;
+    }
+
+    .us-mfg-banner {
+        min-height: 180px;
+    }
+
+    .us-mfg-content {
+        padding: 15px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        text-align: center;
+    }
+
+    .telemetry {
+        display: none;
+    }
+
+    .scroll-prompt {
+        bottom: -30px;
+        font-size: 0.65rem;
+    }
+
+    footer > div {
+        flex-direction: column !important;
+        text-align: center;
+        gap: 10px !important;
+    }
+}
+
 
 /* --- PARTNER SECTION ANIMATIONS & FLARE --- */
 
