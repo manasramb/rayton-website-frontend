@@ -348,9 +348,10 @@ p {
     position: relative;
     padding-left: 20px;
     margin-bottom: 10px;
-    color: var(--text-main);
+    color: var(--cyan);
     font-family: 'Share Tech Mono';
     font-size: clamp(0.85rem, 2vw, 1rem);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 .bullet-list li::before {
@@ -367,8 +368,9 @@ p {
 
 .check-list li {
     margin-bottom: 10px;
-    color: var(--text-main);
+    color: var(--cyan);
     font-size: clamp(0.9rem, 2vw, 1.1rem);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
 }
 
 /* Layout overrides for new sections */
